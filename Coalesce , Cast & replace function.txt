@@ -1,0 +1,68 @@
+-- COALESCE: returns first value of a list of values which is not null
+select 
+coalesce(actual_arrival-scheduled_arrival, '0:00')
+from flights
+
+select 
+coalesce(actual_arrival-scheduled_arrival, '0:00') as time_diff
+from flights
+
+
+-- CAST: changes the data tyoe of a value
+-- eg: numeric to text etc
+-- CAST(value/column AS data type)
+select 
+cast(scheduled_arrival as varchar) 
+from flights
+-- varchar is usually used for character data type 
+
+-- change data type as date
+
+select 
+cast(scheduled_arrival as date) 
+from flights
+
+select 
+cast(scheduled_arrival as date) as Date_of_arrival
+from flights
+
+-- mention the flights which didn't arrived as well
+select 
+coalesce (cast (actual_arrival-scheduled_arrival as varchar), 'not arrived')
+from flights
+
+-- change ticket data type into interger from character 
+select
+cast(ticket_no as bigint)
+from tickets
+
+--CHALLENGE: replace nulls to 'not returned' and calculate the time duration of rental returns
+-- 1. check the null values 
+select rental_date, return_date
+from rental
+order by return_date desc
+
+-- 1. Solution
+select coalesce (cast (return_date-rental_date as varchar), 'not returned') as return_duration
+from rental
+order by return_date desc
+
+-- REPLACE: replace text from a string in a column with another text
+-- eg: PG0134 to FL0134 (replaced PG with FL) or can remove PG
+-- replace(column, old_text, new_text)
+
+-- remove blank space between the number 
+select 
+cast(replace(passenger_id, ' ', '') as bigint)
+from tickets
+
+-- PG0134 to FL0134 (replaced PG with FL) as character
+select 
+cast(replace(flight_no, 'PG', 'FL') as varchar)
+from flights
+
+-- PG0134 to 134 (remove PG)
+select flight_no,
+cast(replace(flight_no, 'PG', '') as int) as flight_int
+from flights
+
